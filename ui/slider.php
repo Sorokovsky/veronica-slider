@@ -1,0 +1,1 @@
+<h2>Slider for veronica</h2>
