@@ -102,15 +102,17 @@ class Slider extends Widget_Base {
     protected function render(): void
     {
         $settings = $this->get_settings_for_display();
-        $max_height = $settings['max-height'] ?? "300px";
-        $title = $settings['title'] ?? "";
-        $text = $settings['text'] ?? "";
-        $color = $settings['background-color'] ?? "#ffffff";
-        $presenter = new SliderPresenter();
-        $chooser = $this->setup_random_chooser($settings);
-        $first_image = $chooser->choose_random_image();
-        $second_image = $chooser->choose_random_image();
-        echo $presenter->get_view($title, $text, $color, $first_image, $second_image, $max_height);
+        if($this->can_render($settings)) {
+            $max_height = $settings['max-height'] ?? "300px";
+            $title = $settings['title'] ?? "";
+            $text = $settings['text'] ?? "";
+            $color = $settings['background-color'] ?? "#ffffff";
+            $presenter = new SliderPresenter();
+            $chooser = $this->setup_random_chooser($settings);
+            $first_image = $chooser->choose_random_image();
+            $second_image = $chooser->choose_random_image();
+            echo $presenter->get_view($title, $text, $color, $first_image, $second_image, $max_height);
+        }
     }
 
     private function setup_random_chooser(mixed $settings): RandomImageChooser
@@ -124,5 +126,17 @@ class Slider extends Widget_Base {
           $chooser->add_image($image);
         }
        return $chooser;
+    }
+
+    private function can_render($settings): bool
+    {
+        $images = $settings["images"] ?? [];
+        $can_render = true;
+        if(count($images) < 2) $can_render = false;
+        foreach ($images as $item) {
+            $image_data = $item['image'];
+            if (!isset($image_data) || $image_data == null || $image_data["url"] == "") $can_render = false;
+        }
+        return $can_render;
     }
 }
