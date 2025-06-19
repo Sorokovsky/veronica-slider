@@ -79,6 +79,19 @@ class Slider extends Widget_Base {
                 "default" => "Текст",
             ]);
 
+        $this->add_control("slider_button_text",
+        [
+            "label" => "Текст кнопки",
+            "type" => Controls_Manager::TEXT,
+            "default" => "",
+        ]);
+
+        $this->add_control("slider_button_link",
+        [
+            "label" => "Посилання кнопки",
+            "type" => Controls_Manager::URL,
+        ]);
+
         $this->end_controls_section();
 
         $this->start_controls_section("styles", [
@@ -106,12 +119,14 @@ class Slider extends Widget_Base {
             $max_height = $settings['max-height'] ?? "300px";
             $title = $settings['title'] ?? "";
             $text = $settings['text'] ?? "";
+            $button_text = $settings['slider_button_text'] ?? "";
+            $button_link = $settings['slider_button_link']['url'] ?? "";
             $color = $settings['background-color'] ?? "#ffffff";
             $presenter = new SliderPresenter();
             $chooser = $this->setup_random_chooser($settings);
             $first_image = $chooser->choose_random_image();
             $second_image = $chooser->choose_random_image();
-            echo $presenter->get_view($title, $text, $color, $first_image, $second_image, $max_height);
+            echo $presenter->get_view($title, $text, $button_text, $button_link, $color, $first_image, $second_image, $max_height);
         }
     }
 
@@ -130,9 +145,14 @@ class Slider extends Widget_Base {
 
     private function can_render($settings): bool
     {
-        $images = $settings["images"] ?? [];
         $can_render = true;
+        $images = $settings["images"] ?? [];
+        $text = $settings["text"] ?? "";
+        $title = $settings["title"] ?? "";
+        $button_text = $settings["slider_button_text"] ?? "";
+        $button_link = $settings["slider_button_link"]['url'] ?? "";
         if(count($images) < 2) $can_render = false;
+        if($text == "" || $title == "" || $button_text == "" || $button_link == "") $can_render = false;
         foreach ($images as $item) {
             $image_data = $item['image'];
             if (!isset($image_data) || $image_data == null || $image_data["url"] == "") $can_render = false;
