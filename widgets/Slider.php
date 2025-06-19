@@ -91,6 +91,11 @@ class Slider extends Widget_Base {
            "type" => Controls_Manager::TEXT,
            "default" => "500px",
         ]);
+        $this->add_control("background-color",
+        [
+           "label" => "Задній фон",
+           "type" => Controls_Manager::COLOR,
+        ]);
         $this->end_controls_section();
     }
 
@@ -100,9 +105,12 @@ class Slider extends Widget_Base {
         $max_height = $settings['max-height'] ?? "300px";
         $title = $settings['title'] ?? "";
         $text = $settings['text'] ?? "";
+        $color = $settings['background-color'] ?? "#ffffff";
         $presenter = new SliderPresenter();
         $chooser = $this->setup_random_chooser($settings);
-        echo $presenter->get_view($title, $text, $chooser->choose_random_image(), $chooser->choose_random_image(), $max_height);
+        $first_image = $chooser->choose_random_image();
+        $second_image = $chooser->choose_random_image();
+        echo $presenter->get_view($title, $text, $color, $first_image, $second_image, $max_height);
     }
 
     private function setup_random_chooser(mixed $settings): RandomImageChooser

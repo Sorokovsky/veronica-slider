@@ -7,9 +7,9 @@ use VeronicaSlider\Image;
 class SliderPresenter
 {
 
-    public function get_view(string $title, string $text, Image $first, Image $second, string $max_height): string
+    public function get_view(string $title, string $text, string $color, Image $first, Image $second, string $max_height): string
     {
-        $html = $this->get_styles($max_height);
+        $html = $this->get_styles($max_height, $color);
         $html .= '<div class="veronica-slider">';
         $html .= $this->get_image_block($first);
         $html .= $this->get_main_block($title, $text);
@@ -56,7 +56,7 @@ class SliderPresenter
                 </div>";
     }
 
-    public function get_styles(string $max_height): string
+    public function get_styles(string $max_height, string $color): string
     {
         return "<style>
             .veronica-slider {
@@ -90,6 +90,7 @@ class SliderPresenter
             }
             .veronica__main {
                 width: 100%;
+                background-color: $color;
             }
         </style>";
     }
