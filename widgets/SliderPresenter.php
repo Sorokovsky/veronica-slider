@@ -80,7 +80,7 @@ class SliderPresenter
 
     private function get_button(string $text, string $link): string
     {
-        return "<a class='button' href='$link'>$text</a>";
+        return "<a class='veronica__button' href='$link'>$text</a>";
     }
 
     private function get_styles(string $max_height, string $color): string
@@ -124,6 +124,31 @@ class SliderPresenter
             }
             .veronica-slider > * {
                 flex: 33.3% 1 1;
+            }
+            .veronica__button {
+                display: block;
+                text-decoration: none;
+                font-weight: 500;
+                background-color: transparent;
+                position: relative;
+                z-index: 1;
+            }
+            .veronica__button::after {
+                content: '';
+                position: absolute;
+                z-index: 1;
+                bottom: -5px;
+                left: 0;
+                width: 100%;
+                height: 1px;
+                background-color: #111111;
+                transform-origin: left;
+                transform: scaleX(1);
+                transition: transform .2s ease-in-out;
+            }
+            .veronica__button:hover::after {
+                transform-origin: right;
+                transform: scaleX(0);
             }
         </style>";
     }
