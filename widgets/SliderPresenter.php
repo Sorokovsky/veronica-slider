@@ -94,7 +94,7 @@ class SliderPresenter
             .veronica-slider img {
                 object-fit: cover;
                 width: 100%;
-                height: 100%;
+                max-height: $max_height;
             }
             .veronica-slider .image {
                 display: block;
@@ -103,6 +103,7 @@ class SliderPresenter
                 max-height: $max_height;
             }
             .veronica__title {
+                line-height: 1;
                 font-size: 36px;
                 text-align: center;
                 padding: 0;
@@ -121,6 +122,7 @@ class SliderPresenter
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
+                padding: 75px 0;
             }
             .veronica-slider > * {
                 flex: 33.3% 1 1;
@@ -132,6 +134,7 @@ class SliderPresenter
                 background-color: transparent;
                 position: relative;
                 z-index: 1;
+                margin-bottom: 6px;
             }
             .veronica__button::after {
                 content: '';
@@ -149,6 +152,21 @@ class SliderPresenter
             .veronica__button:hover::after {
                 transform-origin: right;
                 transform: scaleX(0);
+            }
+            @media screen and (max-width: 640px) {
+                .veronica-slider {
+                    flex-direction: column;
+                }
+                .veronica-slider > * {
+                    flex: auto 1 1;
+                }
+                .veronica-slider .image {
+                    max-height: 80vh;
+                    overflow: hidden;
+                }
+                .veronica-slider .image img {
+                    max-height: 80vh;
+                }
             }
         </style>";
     }
