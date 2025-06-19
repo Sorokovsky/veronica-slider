@@ -7,12 +7,12 @@ use VeronicaSlider\Image;
 class SliderPresenter
 {
 
-    public function get_view(Image $first, Image $second, string $max_height): string
+    public function get_view(string $title, string $text, Image $first, Image $second, string $max_height): string
     {
         $html = $this->get_styles($max_height);
         $html .= '<div class="veronica-slider">';
         $html .= $this->get_image_block($first);
-        $html .= $this->get_main_block();
+        $html .= $this->get_main_block($title, $text);
         $html .= $this->get_image_block($second);
         $html .= '</div>';
         return $html;
@@ -47,10 +47,13 @@ class SliderPresenter
         return "<img alt='$alt' src='$url' />";
     }
 
-    public function get_main_block(): string
+    public function get_main_block(string $title, string $text): string
     {
-        return "<div class='main'>
-                <h2>Title</h2></div>";
+        return "<div class='veronica__main'>
+                    <h2 class='veronica__title'>$title</h2>
+                    <p class='veronica__text'>$text</p>
+                    <a>Button</a>
+                </div>";
     }
 
     public function get_styles(string $max_height): string
@@ -59,7 +62,7 @@ class SliderPresenter
             .veronica-slider {
             display: flex;
             align-items: stretch;
-            justify-content: center;
+            justify-content: space-between;
             max-height: $max_height;
             }
             .veronica-slider img {
@@ -71,6 +74,22 @@ class SliderPresenter
                 display: block;
                 margin: 0;
                 padding: 0;
+                max-width: 600px;
+            }
+            .veronica__title {
+                font-size: 36px;
+                text-align: center;
+                padding: 10px 5px;
+                margin: 0;
+            }
+            p.veronica__text {
+                font-size: 16px;
+                padding: 10px 5px;
+                margin: 0;
+                text-align: center;
+            }
+            .veronica__main {
+                width: 100%;
             }
         </style>";
     }

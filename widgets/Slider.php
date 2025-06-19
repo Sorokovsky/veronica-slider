@@ -59,6 +59,28 @@ class Slider extends Widget_Base {
 
         $this->end_controls_section();
 
+        $this->start_controls_section("main-content",
+            [
+                "label" => "Зміст посереденні",
+                "tab" => Controls_Manager::TAB_CONTENT,
+            ]);
+
+        $this->add_control("title",
+            [
+               "label" => "Заголовок",
+               "type" => Controls_Manager::TEXT,
+               "default" => "Заголовок",
+            ]);
+
+        $this->add_control("text",
+            [
+                "label" => "Текст",
+                "type" => Controls_Manager::TEXT,
+                "default" => "Текст",
+            ]);
+
+        $this->end_controls_section();
+
         $this->start_controls_section("styles", [
             "label" => "Налаштування стилів",
             "tab" => Controls_Manager::TAB_CONTENT,
@@ -76,9 +98,11 @@ class Slider extends Widget_Base {
     {
         $settings = $this->get_settings_for_display();
         $max_height = $settings['max-height'] ?? "300px";
+        $title = $settings['title'] ?? "";
+        $text = $settings['text'] ?? "";
         $presenter = new SliderPresenter();
         $chooser = $this->setup_random_chooser($settings);
-        echo $presenter->get_view($chooser->choose_random_image(), $chooser->choose_random_image(), $max_height);
+        echo $presenter->get_view($title, $text, $chooser->choose_random_image(), $chooser->choose_random_image(), $max_height);
     }
 
     private function setup_random_chooser(mixed $settings): RandomImageChooser
