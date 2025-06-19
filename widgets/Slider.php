@@ -7,6 +7,7 @@ require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "SliderPresenter.php";
 
 
 use Elementor\Controls_Manager;
+use Elementor\Plugin;
 use Elementor\Repeater;
 use Elementor\Widget_Base;
 use widgets\SliderPresenter;
@@ -143,20 +144,48 @@ class Slider extends Widget_Base {
        return $chooser;
     }
 
+    private function render_errors(array $errors): void
+    {
+        if (count($errors) > 0 && Plugin::instance()->editor->is_edit_mode()) {
+            echo "<ul>";
+            foreach ($errors as $error) {
+                echo "<li style='color: orangered'>" . $error . "</li>";
+            }
+            echo "</ul>";
+        }
+    }
+
     private function can_render($settings): bool
     {
-        $can_render = true;
+        $errors = array();
         $images = $settings["images"] ?? [];
         $text = $settings["text"] ?? "";
         $title = $settings["title"] ?? "";
         $button_text = $settings["slider_button_text"] ?? "";
         $button_link = $settings["slider_button_link"]['url'] ?? "";
-        if(count($images) < 2) $can_render = false;
-        if($text == "" || $title == "" || $button_text == "" || $button_link == "") $can_render = false;
+        if(count($images) < 2) {
+            $errors[] = "Кількість фотографій має бути мінімум 2";
+        }
+        if($title == "") {
+            $errors[] = "Заголовок має бути встановлено";
+        }
+        if($text == "") {
+            $errors[] = "Текст має бути встановлено";
+        }
+        if($button_text == "") {
+            $errors[] = "Текст для кнопки має бути встановлено";
+        }
+        if($button_link == "") {
+            $errors[] = "Посилання для кнопки має бути встановлено";
+        }
         foreach ($images as $item) {
             $image_data = $item['image'];
-            if (!isset($image_data) || $image_data == null || $image_data["url"] == "") $can_render = false;
+            if (!isset($image_data) || $image_data == null || $image_data["url"] == "") {
+                $errors[] = "У всіх елементах має бути встановлено фотографію";
+                break;
+            }
         }
-        return $can_render;
+        $this->render_errors($errors);
+        return count($errors) <= 0;
     }
 }

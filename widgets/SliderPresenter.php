@@ -95,6 +95,7 @@ class SliderPresenter
                 object-fit: cover;
                 width: 100%;
                 max-height: $max_height;
+                height: 100%;
             }
             .veronica-slider .image {
                 display: block;
