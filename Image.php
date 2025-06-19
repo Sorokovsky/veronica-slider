@@ -4,7 +4,7 @@ namespace VeronicaSlider;
 
 class Image
 {
-    public string $image {
+    public mixed $image {
         get {
             return $this->image;
         }
@@ -15,7 +15,7 @@ class Image
         }
     }
 
-    public function __construct(string $image, string $url = "") {
+    public function __construct(mixed $image, string $url = "") {
         $this->image = $image;
         $this->url = $url;
     }

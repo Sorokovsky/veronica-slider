@@ -1,10 +1,18 @@
 <?php
+
 namespace VeronicaSlider;
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "RandomImageChooser.php";
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "Image.php";
+require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . "SliderPresenter.php";
+
+
+use Elementor\Controls_Manager;
 use Elementor\Repeater;
 use Elementor\Widget_Base;
-use Elementor\Controls_Manager;
+use widgets\SliderPresenter;
 
 class Slider extends Widget_Base {
+
     public function get_name(): string
     {
         return "veronica-slider";
@@ -33,96 +41,54 @@ class Slider extends Widget_Base {
         );
 
         $repeater = new Repeater();
-        $repeater->add_control("image",
-        [
+        $repeater->add_control("image", [
             "label" => "Зображення",
             "type" => Controls_Manager::MEDIA,
         ]);
-        $repeater->add_control("url",
-            [
-                "label" => "Посилання",
-                "type" => Controls_Manager::URL,
-            ]);
-        $this->add_control("images",
-        [
-            "label" => "Списк фотографій",
-            "type" => Controls_Manager::REPEATER,
-            'fields' => $repeater->get_controls(),
-            'default' => []
+        $repeater->add_control("url", [
+            "label" => "Посилання",
+            "type" => Controls_Manager::URL,
         ]);
+
+        $this->add_control("images", [
+            "label" => "Список фотографій",
+            "type" => Controls_Manager::REPEATER,
+            "fields" => $repeater->get_controls() ?: [],
+            "default" => [],
+        ]);
+
         $this->end_controls_section();
-        $this->start_controls_section("main", [
-            "label" => "Зміст посережені",
+
+        $this->start_controls_section("styles", [
+            "label" => "Налаштування стилів",
             "tab" => Controls_Manager::TAB_CONTENT,
         ]);
+        $this->add_control("max-height",
+        [
+           "label" => "Максимальна висота",
+           "type" => Controls_Manager::TEXT,
+           "default" => "500px",
+        ]);
+        $this->end_controls_section();
     }
 
     protected function render(): void
     {
-        echo "<style>
-            .veronica-slider {
-            display: flex;
-            align-items: stretch;
-            justify-content: center;
-            }
-            .veronica-slider img {
-                object-fit: contain;
-                width: 100%;
-                height: 100%;
-            }
-            .veronica-slider .image {
-                display: block;
-                margin: 0;
-                padding: 0;
-            }
-        </style>";
-        echo "<div class='veronica-slider'>'";
-        $image_chooser = $this->setup_random_chooser();
-        echo $this->get_image_block($image_chooser->choose_random_image());
-        echo $this->get_main_block();
-        echo $this->get_image_block($image_chooser->choose_random_image());
-        echo "</div>";
-    }
-
-    private function get_image_block(Image $image): string
-    {
-        if(isset($image->url) && $image->url != "") return $this->get_url_block($image);
-        else return $this->get_normal_block($image);
-    }
-
-    private function get_url_block(Image $image): string
-    {
-        $html = "<a class='image' href='.$image->url.'>";
-        $html.= "<img src='".$image->image."' />";
-        $html.="</a>";
-        return $html;
-    }
-
-    private function get_normal_block(Image $image): string
-    {
-        $html = "<div class='image'>";
-        $html.= "<img src='".$image->image."' />";
-        $html.="</div>";
-        return $html;
-    }
-
-    private function get_main_block(): string
-    {
-        return "<div class='main'>
-                <h2>Title</h2></div>";
-    }
-
-    private function setup_random_chooser(): RandomImageChooser
-    {
-        require_once dirname(__FILE__).DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."RandomImageChooser.php";
         $settings = $this->get_settings_for_display();
-        $images = $settings["images"];
+        $max_height = $settings['max-height'] ?? "300px";
+        $presenter = new SliderPresenter();
+        $chooser = $this->setup_random_chooser($settings);
+        echo $presenter->get_view($chooser->choose_random_image(), $chooser->choose_random_image(), $max_height);
+    }
+
+    private function setup_random_chooser(mixed $settings): RandomImageChooser
+    {
+        $images = $settings["images"] ?? [];
         $chooser = new RandomImageChooser();
         foreach ($images as $item) {
-          $image_url = $item['image']["url"];
+          $image_data = $item['image'];
           $url = $item['url']["url"] ?? "";
-          require_once dirname(__FILE__).DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."Image.php";
-          $image = new Image($image_url, $url);
+          $image = new Image($image_data, $url);
           $chooser->add_image($image);
         }
        return $chooser;

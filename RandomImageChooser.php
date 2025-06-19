@@ -1,6 +1,8 @@
 <?php
 namespace VeronicaSlider;
 
+use http\Exception\RuntimeException;
+
 class RandomImageChooser
 {
     /**
@@ -12,12 +14,20 @@ class RandomImageChooser
     }
 
     public function choose_random_image(bool $canRepeat = false): Image {
+        if($this->is_empty()) {
+            throw new RuntimeException("Images is empty");
+        }
         $index = $this->get_random_index();
         $image = $this->images[$index];
         if(!$canRepeat) {
             array_splice($this->images, $index, 1);
         }
         return $image;
+    }
+
+    public function is_empty(): bool
+    {
+        return count($this->images) == 0;
     }
 
     public function add_image(Image $image): void
