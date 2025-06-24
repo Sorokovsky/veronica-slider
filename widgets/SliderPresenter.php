@@ -51,8 +51,9 @@ class SliderPresenter
 
     private function get_image_tag_block(Image $image): string
     {
+        $wordpress_image_title = pathinfo($image->image['url'], PATHINFO_FILENAME);
         $url = $image->image['url'];
-        $alt = $image->image['alt'];
+        $alt = $wordpress_image_title;
         return "<img alt='$alt' src='$url' />";
     }
 
@@ -90,6 +91,7 @@ class SliderPresenter
             display: flex;
             align-items: stretch;
             justify-content: space-between;
+            min-height: $max_height;
             }
             .veronica-slider img {
                 object-fit: cover;
@@ -123,7 +125,7 @@ class SliderPresenter
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                padding: 75px 0;
+                padding: 75px 10px;
             }
             .veronica-slider > * {
                 flex: 33.3% 1 1;
@@ -154,7 +156,7 @@ class SliderPresenter
                 transform-origin: right;
                 transform: scaleX(0);
             }
-            @media screen and (max-width: 640px) {
+            @media screen and (max-width:990px) {
                 .veronica-slider {
                     flex-direction: column;
                 }
